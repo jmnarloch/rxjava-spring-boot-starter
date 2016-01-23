@@ -1,0 +1,9 @@
+language: java
+jdk:
+- oraclejdk7
+install:
+- ./gradlew assemble -PossrhUsername="${ossrhUsername}" -PossrhPassword="${ossrhPassword}"
+script:
+- ./gradlew check -PossrhUsername="${ossrhUsername}" -PossrhPassword="${ossrhPassword}"
+after_success:
+- ./gradlew jacocoTestReport coveralls -PossrhUsername="${ossrhUsername}" -PossrhPassword="${ossrhPassword}"

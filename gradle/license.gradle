@@ -1,0 +1,11 @@
+apply plugin: 'license'
+
+license {
+
+    header rootProject.file('codequality/HEADER')
+    strictCheck true
+    skipExistingHeaders true
+    include "**/*.java"
+
+    ext.year = Calendar.getInstance().get(Calendar.YEAR)
+}

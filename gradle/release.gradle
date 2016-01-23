@@ -1,0 +1,88 @@
+apply plugin: 'maven'
+apply plugin: 'signing'
+apply plugin: 'net.researchgate.release'
+
+task javadocJar(type: Jar) {
+    classifier = 'javadoc'
+    from javadoc
+}
+
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+artifacts {
+    archives javadocJar, sourcesJar
+}
+
+signing {
+    required { isReleaseVersion && gradle.taskGraph.hasTask("uploadArchives") }
+    sign configurations.archives
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                authentication(userName: rootProject.hasProperty('ossrhUsername') ? rootProject.ossrhUsername : '', password: rootProject.hasProperty('ossrhPassword') ? rootProject.ossrhPassword : '')
+            }
+
+            snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+                authentication(userName: rootProject.hasProperty('ossrhUsername') ? rootProject.ossrhUsername : '', password: rootProject.hasProperty('ossrhPassword') ? rootProject.ossrhPassword : '')
+            }
+
+            pom.project {
+                name 'rxjava-spring-boot-starter'
+                packaging 'jar'
+                description 'Spring Boot Netflix RxJava'
+                url 'https://github.com/jmnarloch/rxjava-spring-boot-starter'
+
+                scm {
+                    connection 'scm:git:https://github.com/jmnarloch/rxjava-spring-boot-starter.git'
+                    developerConnection 'scm:git:https://github.com/jmnarloch/rxjava-spring-boot-starter.git'
+                    url 'https://github.com/jmnarloch/rxjava-spring-boot-starter.git'
+                }
+
+                licenses {
+                    license {
+                        name 'The Apache License, Version 2.0'
+                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id 'jmnarloch'
+                        name 'Jakub Narloch'
+                        email 'jmnarloch@gmail.com'
+                    }
+                }
+            }
+        }
+    }
+}
+
+def installer = install.repositories.mavenInstaller
+def deployer = uploadArchives.repositories.mavenDeployer
+
+[installer, deployer]*.pom*.whenConfigured {pom ->
+    def dependencyMap = project.configurations.compile.dependencies.collectEntries { [it.name, it] }
+    pom.dependencies.findAll {
+        def dep = dependencyMap[it.artifactId]
+        return dep?.hasProperty('optional') && dep.optional
+    }*.optional = true
+}
+
+release {
+    tagTemplate = '${version}'
+
+    git {
+        requireBranch = 'master'
+        pushToRemote = 'origin'
+        pushToCurrentBranch = false
+    }
+}
+afterReleaseBuild.dependsOn uploadArchives
