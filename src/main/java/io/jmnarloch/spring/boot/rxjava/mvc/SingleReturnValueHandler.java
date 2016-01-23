@@ -19,18 +19,23 @@ import io.jmnarloch.spring.boot.rxjava.async.SingleDeferredResult;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.context.request.async.WebAsyncUtils;
-import org.springframework.web.method.support.HandlerMethodReturnValueHandler;
+import org.springframework.web.method.support.AsyncHandlerMethodReturnValueHandler;
 import org.springframework.web.method.support.ModelAndViewContainer;
 import rx.Single;
 
 /**
  *
  */
-public class SingleReturnValueHandler implements HandlerMethodReturnValueHandler {
+public class SingleReturnValueHandler implements AsyncHandlerMethodReturnValueHandler {
+
+    @Override
+    public boolean isAsyncReturnValue(Object returnValue, MethodParameter returnType) {
+        return returnValue != null && supportsReturnType(returnType);
+    }
 
     @Override
     public boolean supportsReturnType(MethodParameter returnType) {
-        return false;
+        return Single.class.isAssignableFrom(returnType.getParameterType());
     }
 
     @SuppressWarnings("unchecked")
