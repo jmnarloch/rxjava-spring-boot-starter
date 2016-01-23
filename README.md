@@ -9,7 +9,7 @@
 
 ## Setup
 
-Add the Spring Cloud starter to your project:
+Add the Spring Boot starter to your project:
 
 ```xml
 <dependency>
