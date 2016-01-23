@@ -13,55 +13,42 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.jmnarloch.spring.cloud.rxjava.async;
+package io.jmnarloch.spring.boot.rxjava.async;
 
-import org.springframework.http.MediaType;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
+import org.springframework.web.context.request.async.DeferredResult;
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
 
-import java.io.IOException;
-
-
 /**
  *
  */
-class ResponseBodyEmitterSubscriber<T> extends Subscriber<T> implements Runnable {
+class DeferredResultSubscriber<T> extends Subscriber<T> implements Runnable {
 
-    private final MediaType mediaType;
+    private final DeferredResult<T> deferredResult;
 
     private final Subscription subscription;
 
-    private final ResponseBodyEmitter responseBodyEmitter;
+    public DeferredResultSubscriber(Observable<T> observable, DeferredResult<T> deferredResult) {
 
-    public ResponseBodyEmitterSubscriber(MediaType mediaType, Observable<T> observable, ResponseBodyEmitter responseBodyEmitter) {
-
-        this.mediaType = mediaType;
         this.subscription = observable.subscribe(this);
-        this.responseBodyEmitter = responseBodyEmitter;
-        this.responseBodyEmitter.onTimeout(this);
-        this.responseBodyEmitter.onCompletion(this);
+        this.deferredResult = deferredResult;
+        this.deferredResult.onTimeout(this);
+        this.deferredResult.onCompletion(this);
     }
 
     @Override
     public void onNext(T value) {
-
-        try {
-            responseBodyEmitter.send(value, mediaType);
-        } catch (IOException e) {
-            throw new RuntimeException(e.getMessage(), e);
-        }
+        deferredResult.setResult(value);
     }
 
     @Override
     public void onError(Throwable e) {
-        responseBodyEmitter.completeWithError(e);
+        deferredResult.setErrorResult(e);
     }
 
     @Override
     public void onCompleted() {
-        responseBodyEmitter.complete();
     }
 
     @Override

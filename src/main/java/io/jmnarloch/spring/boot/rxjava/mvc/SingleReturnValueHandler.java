@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.jmnarloch.spring.cloud.rxjava.mvc;
+package io.jmnarloch.spring.boot.rxjava.mvc;
 
-import io.jmnarloch.spring.cloud.rxjava.async.SingleDeferredResult;
+import io.jmnarloch.spring.boot.rxjava.async.SingleDeferredResult;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.context.request.async.WebAsyncUtils;

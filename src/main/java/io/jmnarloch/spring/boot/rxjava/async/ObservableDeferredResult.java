@@ -13,33 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.jmnarloch.spring.cloud.rxjava.async;
+package io.jmnarloch.spring.boot.rxjava.async;
 
 import org.springframework.util.Assert;
 import org.springframework.web.context.request.async.DeferredResult;
-import rx.Single;
+import rx.Observable;
+
+import java.util.List;
 
 /**
  *
  */
-public class SingleDeferredResult<T> extends DeferredResult<T> {
+public class ObservableDeferredResult<T> extends DeferredResult<List<T>> {
 
     private static final Object EMPTY_RESULT = new Object();
 
-    private final DeferredResultSubscriber<T> subscriber;
+    private final DeferredResultSubscriber<List<T>> subscriber;
 
-    public SingleDeferredResult(Single<T> single) {
-        this(null, EMPTY_RESULT, single);
+    public ObservableDeferredResult(Observable<T> observable) {
+        this(null, EMPTY_RESULT, observable);
     }
 
-    public SingleDeferredResult(long timeout, Single<T> single) {
-        this(timeout, EMPTY_RESULT, single);
+    public ObservableDeferredResult(long timeout, Observable<T> observable) {
+        this(timeout, EMPTY_RESULT, observable);
     }
 
-    public SingleDeferredResult(Long timeout, Object timeoutResult, Single<T> single) {
+    public ObservableDeferredResult(Long timeout, Object timeoutResult, Observable<T> observable) {
         super(timeout, timeoutResult);
-        Assert.notNull(single, "single can not be null");
+        Assert.notNull(observable, "observable can not be null");
 
-        subscriber = new DeferredResultSubscriber<T>(single.toObservable(), this);
+        subscriber = new DeferredResultSubscriber<List<T>>(observable.toList(), this);
     }
 }

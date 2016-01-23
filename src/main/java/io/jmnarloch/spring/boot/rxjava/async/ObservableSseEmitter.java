@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.jmnarloch.spring.cloud.rxjava.async;
+package io.jmnarloch.spring.boot.rxjava.async;
 
 import org.springframework.http.MediaType;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
