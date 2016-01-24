@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *    http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,8 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.jmnarloch.spring.boot.rxjava.mvc;
+package io.jmnarloch.spring.boot.rxjava;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,7 +25,10 @@ import org.springframework.boot.test.IntegrationTest;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.boot.test.TestRestTemplate;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -31,22 +36,25 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import rx.Single;
+import rx.Observable;
+
+import java.util.Date;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 /**
- * Tests the {@link SingleReturnValueHandler} class.
+ * Demonstrates usage of this component.
  *
  * @author Jakub Narloch
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = SingleReturnValueHandlerTest.Application.class)
+@SpringApplicationConfiguration(classes = Demo.InvoiceResource.class)
 @WebAppConfiguration
 @IntegrationTest({"server.port=0"})
 @DirtiesContext
-public class SingleReturnValueHandlerTest {
+public class Demo {
 
     @Value("${local.server.port}")
     private int port = 0;
@@ -56,60 +64,54 @@ public class SingleReturnValueHandlerTest {
     @Configuration
     @EnableAutoConfiguration
     @RestController
-    protected static class Application {
+    protected static class InvoiceResource {
 
-        @RequestMapping(method = RequestMethod.GET, value = "/single")
-        public Single<String> single() {
-            return Single.just("single value");
-        }
+        @RequestMapping(method = RequestMethod.GET, value = "/invoices", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+        public Observable<Invoice> getInvoices() {
 
-        @RequestMapping(method = RequestMethod.GET, value = "/singleWithResponse")
-        public Single<ResponseEntity<String>> singleWithResponse() {
-            return Single.just(new ResponseEntity<String>("single value", HttpStatus.NOT_FOUND));
-        }
-
-        @RequestMapping(method = RequestMethod.GET, value = "/throw")
-        public Single<Object> error() {
-            return Single.error(new RuntimeException("Unexpected"));
+            return Observable.just(
+                    new Invoice("Acme", new Date()),
+                    new Invoice("Oceanic", new Date())
+            );
         }
     }
 
     @Test
-    public void shouldRetrieveSingleValue() {
+    public void shouldRetrieveInvoices() {
 
         // when
-        ResponseEntity<String> response = restTemplate.getForEntity(path("/single"), String.class);
+        ResponseEntity<List<Invoice>> response = restTemplate.exchange(path("/invoices"),
+                HttpMethod.GET, null, new ParameterizedTypeReference<List<Invoice>>() {
+                });
 
         // then
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("single value", response.getBody());
-    }
-
-    @Test
-    public void shouldRetrieveSingleValueWithStatusCode() {
-
-        // when
-        ResponseEntity<String> response = restTemplate.getForEntity(path("/singleWithResponse"), String.class);
-
-        // then
-        assertNotNull(response);
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-        assertEquals("single value", response.getBody());
-    }
-
-    @Test
-    public void shouldRetrieveErrorResponse() {
-
-        // when
-        ResponseEntity<Object> response = restTemplate.getForEntity(path("/throw"), Object.class);
-
-        // then
-        assertNotNull(response);
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+        assertEquals("Acme", response.getBody().get(0).getTitle());
     }
 
     private String path(String context) {
         return String.format("http://localhost:%d%s", port, context);
+    }
+
+    private static class Invoice {
+
+        private final String title;
+
+        private final Date issueDate;
+
+        @JsonCreator
+        public Invoice(@JsonProperty("title") String title, @JsonProperty("issueDate") Date issueDate) {
+            this.title = title;
+            this.issueDate = issueDate;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+        public Date getIssueDate() {
+            return issueDate;
+        }
     }
 }

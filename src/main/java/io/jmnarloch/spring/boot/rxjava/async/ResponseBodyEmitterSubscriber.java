@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -25,7 +25,9 @@ import java.io.IOException;
 
 
 /**
+ * Subscriber that any value produced by the {@link Observable} into the {@link ResponseBodyEmitter}.
  *
+ * @author Jakub Narloch
  */
 class ResponseBodyEmitterSubscriber<T> extends Subscriber<T> implements Runnable {
 
@@ -38,10 +40,10 @@ class ResponseBodyEmitterSubscriber<T> extends Subscriber<T> implements Runnable
     public ResponseBodyEmitterSubscriber(MediaType mediaType, Observable<T> observable, ResponseBodyEmitter responseBodyEmitter) {
 
         this.mediaType = mediaType;
-        this.subscription = observable.subscribe(this);
         this.responseBodyEmitter = responseBodyEmitter;
         this.responseBodyEmitter.onTimeout(this);
         this.responseBodyEmitter.onCompletion(this);
+        this.subscription = observable.subscribe(this);
     }
 
     @Override

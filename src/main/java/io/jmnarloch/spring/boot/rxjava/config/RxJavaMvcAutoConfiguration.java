@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -18,7 +18,6 @@ package io.jmnarloch.spring.boot.rxjava.config;
 import io.jmnarloch.spring.boot.rxjava.mvc.ObservableReturnValueHandler;
 import io.jmnarloch.spring.boot.rxjava.mvc.SingleReturnValueHandler;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -35,7 +34,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * The RxJava Spring MVC integration auto configuration.
  *
+ * @author Jakub Narloch
  */
 @Configuration
 @ConditionalOnProperty(value = "rxjava.mvc.enabled", matchIfMissing = true)
@@ -69,7 +70,7 @@ public class RxJavaMvcAutoConfiguration {
             return new WebMvcConfigurerAdapter() {
                 @Override
                 public void addReturnValueHandlers(List<HandlerMethodReturnValueHandler> returnValueHandlers) {
-                    if(handlers != null) {
+                    if (handlers != null) {
                         returnValueHandlers.addAll(handlers);
                     }
                 }

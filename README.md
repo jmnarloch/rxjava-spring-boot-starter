@@ -7,6 +7,74 @@
 
 ## Features
 
+### Basic
+
+Registers Spring's MVC return value handlers for `rx.Observable` and `rx.Single` types. You don't need to use any longer
+blocking operations or assign the values to DeferredResult or ListenableFuture instead you can declare that your REST
+endpoint returns an Observable.
+
+Example:
+
+```
+@RestController
+public static class InvoiceResource {
+
+    @RequestMapping(method = RequestMethod.GET, value = "/invoices", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public Observable<Invoice> getInvoices() {
+
+        return Observable.just(
+                new Invoice("Acme", new Date()),
+                new Invoice("Oceanic", new Date())
+        );
+    }
+}
+```
+
+The `Observable` will wrap any produced results into a list and make it process through registered message converters.
+In case if you need to return exactly one result you can use `rx.Single` instead. You can think of `rx.Single`
+as counterparts of Spring's `DeferredResult` or `ListenableFuture`. Also with `rx.Single`, and unlike with `rx.Observable`
+it is possible to return `ResponseEntity` in order to have the control of the HTTP headers or the status code of the
+response.
+
+In some scenarios when you want to have more control over the async processing you can use either `ObservableDeferredResult`
+or `SingleDeferredResult`, those are the specialized implementation of `DeferredResult` allowing for instance of setting
+the processing timeout per response.
+
+### Server side events
+
+Spring 4.2 introduced `ResponseBodyEmitter` for long leaving HTTP connections and streaming the response data. One of
+available specialized implementations is `ObservableSseEmitter` that allows to send long living server side event produced
+from `rx.Observable`.
+
+Example:
+
+```
+@RestController
+public static class Events {
+
+    @RequestMapping(method = RequestMethod.GET, value = "/messages")
+    public ObservableSseEmitter<String> messages() {
+        return new ObservableSseEmitter<String>(
+            Observable.just(
+                "message 1", "message 2", "message 3"
+            )
+        );
+    }
+}
+```
+
+This will output:
+
+```
+data: message 1
+
+data: message 2
+
+data: message 3
+```
+
+The SSE can be conveniently consumed by a JavaScript client for instance.
+
 ## Setup
 
 Add the Spring Boot starter to your project:

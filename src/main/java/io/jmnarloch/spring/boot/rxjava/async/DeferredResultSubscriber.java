@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -21,7 +21,10 @@ import rx.Subscriber;
 import rx.Subscription;
 
 /**
+ * A subscriber that sets the single value produced by the {@link Observable} on the {@link DeferredResult}.
  *
+ * @author Jakub Narloch
+ * @see DeferredResult
  */
 class DeferredResultSubscriber<T> extends Subscriber<T> implements Runnable {
 
@@ -41,7 +44,7 @@ class DeferredResultSubscriber<T> extends Subscriber<T> implements Runnable {
 
     @Override
     public void onNext(T value) {
-        if(!completed) {
+        if (!completed) {
             deferredResult.setResult(value);
         }
     }

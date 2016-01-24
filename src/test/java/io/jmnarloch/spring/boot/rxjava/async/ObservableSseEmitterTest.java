@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *    http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.jmnarloch.spring.boot.rxjava.mvc;
+package io.jmnarloch.spring.boot.rxjava.async;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,22 +31,22 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import rx.Single;
+import rx.Observable;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 /**
- * Tests the {@link SingleReturnValueHandler} class.
+ * Tests the {@link ObservableSseEmitter} class.
  *
  * @author Jakub Narloch
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = SingleReturnValueHandlerTest.Application.class)
+@SpringApplicationConfiguration(classes = ObservableSseEmitterTest.Application.class)
 @WebAppConfiguration
 @IntegrationTest({"server.port=0"})
 @DirtiesContext
-public class SingleReturnValueHandlerTest {
+public class ObservableSseEmitterTest {
 
     @Value("${local.server.port}")
     private int port = 0;
@@ -58,55 +58,39 @@ public class SingleReturnValueHandlerTest {
     @RestController
     protected static class Application {
 
-        @RequestMapping(method = RequestMethod.GET, value = "/single")
-        public Single<String> single() {
-            return Single.just("single value");
+        @RequestMapping(method = RequestMethod.GET, value = "/sse")
+        public ObservableSseEmitter<String> single() {
+            return new ObservableSseEmitter<String>(Observable.just("single value"));
         }
 
-        @RequestMapping(method = RequestMethod.GET, value = "/singleWithResponse")
-        public Single<ResponseEntity<String>> singleWithResponse() {
-            return Single.just(new ResponseEntity<String>("single value", HttpStatus.NOT_FOUND));
-        }
-
-        @RequestMapping(method = RequestMethod.GET, value = "/throw")
-        public Single<Object> error() {
-            return Single.error(new RuntimeException("Unexpected"));
+        @RequestMapping(method = RequestMethod.GET, value = "/messages")
+        public ObservableSseEmitter<String> messages() {
+            return new ObservableSseEmitter<String>(Observable.just("message 1", "message 2", "message 3"));
         }
     }
 
     @Test
-    public void shouldRetrieveSingleValue() {
+    public void shouldRetrieveSse() {
 
         // when
-        ResponseEntity<String> response = restTemplate.getForEntity(path("/single"), String.class);
+        ResponseEntity<String> response = restTemplate.getForEntity(path("/sse"), String.class);
 
         // then
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("single value", response.getBody());
+        assertEquals("data:single value\n\n", response.getBody());
     }
 
     @Test
-    public void shouldRetrieveSingleValueWithStatusCode() {
+    public void shouldRetrieveSseWithMultipleMessages() {
 
         // when
-        ResponseEntity<String> response = restTemplate.getForEntity(path("/singleWithResponse"), String.class);
+        ResponseEntity<String> response = restTemplate.getForEntity(path("/messages"), String.class);
 
         // then
         assertNotNull(response);
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-        assertEquals("single value", response.getBody());
-    }
-
-    @Test
-    public void shouldRetrieveErrorResponse() {
-
-        // when
-        ResponseEntity<Object> response = restTemplate.getForEntity(path("/throw"), Object.class);
-
-        // then
-        assertNotNull(response);
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("data:message 1\n\ndata:message 2\n\ndata:message 3\n\n", response.getBody());
     }
 
     private String path(String context) {
