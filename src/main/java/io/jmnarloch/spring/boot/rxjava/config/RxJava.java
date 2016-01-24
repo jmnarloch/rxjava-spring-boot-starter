@@ -26,7 +26,7 @@ import java.lang.annotation.Target;
 /**
  *
  */
-@Target({ElementType.TYPE, ElementType.PARAMETER, ElementType.METHOD, ElementType.CONSTRUCTOR})
+@Target({ElementType.TYPE, ElementType.PARAMETER, ElementType.METHOD, ElementType.CONSTRUCTOR, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Qualifier

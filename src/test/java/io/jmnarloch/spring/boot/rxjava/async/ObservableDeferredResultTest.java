@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.jmnarloch.spring.boot.rxjava.mvc;
+package io.jmnarloch.spring.boot.rxjava.async;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -46,11 +46,11 @@ import static org.junit.Assert.assertNotNull;
  *
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = ObservableReturnValueHandlerTest.Application.class)
+@SpringApplicationConfiguration(classes = ObservableDeferredResultTest.Application.class)
 @WebAppConfiguration
 @IntegrationTest({ "server.port=0" })
 @DirtiesContext
-public class ObservableReturnValueHandlerTest {
+public class ObservableDeferredResultTest {
 
     @Value("${local.server.port}")
     private int port = 0;
@@ -63,28 +63,28 @@ public class ObservableReturnValueHandlerTest {
     protected static class Application {
 
         @RequestMapping(method = RequestMethod.GET, value = "/single")
-        public Observable<String> single() {
-            return Observable.just("single value");
+        public ObservableDeferredResult<String> single() {
+            return new ObservableDeferredResult<String>(Observable.just("single value"));
         }
 
         @RequestMapping(method = RequestMethod.GET, value = "/multiple")
-        public Observable<String> multiple() {
-            return Observable.just("multiple", "values");
+        public ObservableDeferredResult<String> multiple() {
+            return new ObservableDeferredResult<String>(Observable.just("multiple", "values"));
         }
 
         @RequestMapping(method = RequestMethod.GET, value = "/throw")
-        public Observable<Object> error() {
-            return Observable.error(new RuntimeException("Unexpected"));
+        public ObservableDeferredResult<Object> error() {
+            return new ObservableDeferredResult<Object>(Observable.error(new RuntimeException("Unexpected")));
         }
 
         @RequestMapping(method = RequestMethod.GET, value = "/timeout")
-        public Observable<String> timeout() {
-            return Observable.timer(1, TimeUnit.MINUTES).map(new Func1<Long, String>() {
+        public ObservableDeferredResult<String> timeout() {
+            return new ObservableDeferredResult<String>(Observable.timer(1, TimeUnit.MINUTES).map(new Func1<Long, String>() {
                 @Override
                 public String call(Long aLong) {
                     return "single value";
                 }
-            });
+            }));
         }
     }
 

@@ -29,17 +29,21 @@ class DeferredResultSubscriber<T> extends Subscriber<T> implements Runnable {
 
     private final Subscription subscription;
 
+    private boolean completed;
+
     public DeferredResultSubscriber(Observable<T> observable, DeferredResult<T> deferredResult) {
 
-        this.subscription = observable.subscribe(this);
         this.deferredResult = deferredResult;
         this.deferredResult.onTimeout(this);
         this.deferredResult.onCompletion(this);
+        this.subscription = observable.subscribe(this);
     }
 
     @Override
     public void onNext(T value) {
-        deferredResult.setResult(value);
+        if(!completed) {
+            deferredResult.setResult(value);
+        }
     }
 
     @Override
@@ -49,10 +53,11 @@ class DeferredResultSubscriber<T> extends Subscriber<T> implements Runnable {
 
     @Override
     public void onCompleted() {
+        completed = true;
     }
 
     @Override
     public void run() {
-        subscription.unsubscribe();
+        this.subscription.unsubscribe();
     }
 }

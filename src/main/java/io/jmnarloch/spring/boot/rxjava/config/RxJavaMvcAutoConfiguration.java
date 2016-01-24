@@ -17,7 +17,9 @@ package io.jmnarloch.spring.boot.rxjava.config;
 
 import io.jmnarloch.spring.boot.rxjava.mvc.ObservableReturnValueHandler;
 import io.jmnarloch.spring.boot.rxjava.mvc.SingleReturnValueHandler;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
@@ -29,6 +31,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 import rx.Observable;
 import rx.Single;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -41,7 +44,7 @@ public class RxJavaMvcAutoConfiguration {
     @Bean
     @RxJava
     @ConditionalOnMissingBean
-    @ConditionalOnBean(Observable.class)
+    @ConditionalOnClass(Observable.class)
     public ObservableReturnValueHandler observableReturnValueHandler() {
         return new ObservableReturnValueHandler();
     }
@@ -49,7 +52,7 @@ public class RxJavaMvcAutoConfiguration {
     @Bean
     @RxJava
     @ConditionalOnMissingBean
-    @ConditionalOnBean(Single.class)
+    @ConditionalOnClass(Single.class)
     public SingleReturnValueHandler singleReturnValueHandler() {
         return new SingleReturnValueHandler();
     }
@@ -57,8 +60,12 @@ public class RxJavaMvcAutoConfiguration {
     @Configuration
     public static class RxJavaWebConfiguration {
 
+        @RxJava
+        @Autowired
+        private List<AsyncHandlerMethodReturnValueHandler> handlers = new ArrayList<AsyncHandlerMethodReturnValueHandler>();
+
         @Bean
-        public WebMvcConfigurer rxJavaWebMvcConfiguration(@RxJava final List<AsyncHandlerMethodReturnValueHandler> handlers) {
+        public WebMvcConfigurer rxJavaWebMvcConfiguration() {
             return new WebMvcConfigurerAdapter() {
                 @Override
                 public void addReturnValueHandlers(List<HandlerMethodReturnValueHandler> returnValueHandlers) {

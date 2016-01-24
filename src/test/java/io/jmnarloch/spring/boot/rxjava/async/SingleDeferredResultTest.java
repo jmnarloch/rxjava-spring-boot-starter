@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.jmnarloch.spring.boot.rxjava.mvc;
+package io.jmnarloch.spring.boot.rxjava.async;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,13 +31,8 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import rx.Observable;
-import rx.functions.Func1;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
+import rx.Single;
+import rx.SingleSubscriber;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -46,11 +41,11 @@ import static org.junit.Assert.assertNotNull;
  *
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = ObservableReturnValueHandlerTest.Application.class)
+@SpringApplicationConfiguration(classes = SingleDeferredResultTest.Application.class)
 @WebAppConfiguration
-@IntegrationTest({ "server.port=0" })
+@IntegrationTest({"server.port=0"})
 @DirtiesContext
-public class ObservableReturnValueHandlerTest {
+public class SingleDeferredResultTest {
 
     @Value("${local.server.port}")
     private int port = 0;
@@ -63,28 +58,19 @@ public class ObservableReturnValueHandlerTest {
     protected static class Application {
 
         @RequestMapping(method = RequestMethod.GET, value = "/single")
-        public Observable<String> single() {
-            return Observable.just("single value");
+        public SingleDeferredResult<String> single() {
+            return new SingleDeferredResult<String>(Single.just("single value"));
         }
 
-        @RequestMapping(method = RequestMethod.GET, value = "/multiple")
-        public Observable<String> multiple() {
-            return Observable.just("multiple", "values");
+        @RequestMapping(method = RequestMethod.GET, value = "/singleWithResponse")
+        public SingleDeferredResult<ResponseEntity<String>> singleWithResponse() {
+            return new SingleDeferredResult<ResponseEntity<String>>(
+                    Single.just(new ResponseEntity<String>("single value", HttpStatus.NOT_FOUND)));
         }
 
         @RequestMapping(method = RequestMethod.GET, value = "/throw")
-        public Observable<Object> error() {
-            return Observable.error(new RuntimeException("Unexpected"));
-        }
-
-        @RequestMapping(method = RequestMethod.GET, value = "/timeout")
-        public Observable<String> timeout() {
-            return Observable.timer(1, TimeUnit.MINUTES).map(new Func1<Long, String>() {
-                @Override
-                public String call(Long aLong) {
-                    return "single value";
-                }
-            });
+        public SingleDeferredResult<Object> error() {
+            return new SingleDeferredResult<Object>(Single.error(new RuntimeException("Unexpected")));
         }
     }
 
@@ -92,24 +78,24 @@ public class ObservableReturnValueHandlerTest {
     public void shouldRetrieveSingleValue() {
 
         // when
-        ResponseEntity<List> response = restTemplate.getForEntity(path("/single"), List.class);
+        ResponseEntity<String> response = restTemplate.getForEntity(path("/single"), String.class);
 
         // then
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(Collections.singletonList("single value"), response.getBody());
+        assertEquals("single value", response.getBody());
     }
 
     @Test
-    public void shouldRetrieveMultipleValues() {
+    public void shouldRetrieveSingleValueWithStatusCode() {
 
         // when
-        ResponseEntity<List> response = restTemplate.getForEntity(path("/multiple"), List.class);
+        ResponseEntity<String> response = restTemplate.getForEntity(path("/singleWithResponse"), String.class);
 
         // then
         assertNotNull(response);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(Arrays.asList("multiple", "values"), response.getBody());
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertEquals("single value", response.getBody());
     }
 
     @Test
@@ -122,18 +108,6 @@ public class ObservableReturnValueHandlerTest {
         assertNotNull(response);
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
     }
-
-    @Test
-    public void shouldTimeoutOnConnection() {
-
-        // when
-        ResponseEntity<Object> response = restTemplate.getForEntity(path("/timeout"), Object.class);
-
-        // then
-        assertNotNull(response);
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
-    }
-
 
     private String path(String context) {
         return String.format("http://localhost:%d%s", port, context);
