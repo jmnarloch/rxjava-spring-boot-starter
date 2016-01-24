@@ -5,7 +5,19 @@
 [![Build Status](https://travis-ci.org/jmnarloch/rxjava-spring-boot-starter.svg?branch=master)](https://travis-ci.org/jmnarloch/rxjava-spring-boot-starter)
 [![Coverage Status](https://coveralls.io/repos/jmnarloch/rxjava-spring-boot-starter/badge.svg?branch=master&service=github)](https://coveralls.io/github/jmnarloch/rxjava-spring-boot-starter?branch=master)
 
-## Features
+## Setup
+
+Add the Spring Boot starter to your project:
+
+```xml
+<dependency>
+  <groupId>io.jmnarloch</groupId>
+  <artifactId>rxjava-spring-boot-starter</artifactId>
+  <version>1.0.0</version>
+</dependency>
+```
+
+## Usage
 
 ### Basic
 
@@ -75,16 +87,12 @@ data: message 3
 
 The SSE can be conveniently consumed by a JavaScript client for instance.
 
-## Setup
+## Properties
 
-Add the Spring Boot starter to your project:
+The only supported property is `rxjava.mvc.enabled` which allows to disable this extension.
 
-```xml
-<dependency>
-  <groupId>io.jmnarloch</groupId>
-  <artifactId>rxjava-spring-boot-starter</artifactId>
-  <version>1.0.0</version>
-</dependency>
+```
+rxjava.mvc.enabled=true # true by default
 ```
 
 ## License
