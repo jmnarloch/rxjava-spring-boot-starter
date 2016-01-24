@@ -55,7 +55,7 @@ the processing timeout per response.
 ### Server side events
 
 Spring 4.2 introduced `ResponseBodyEmitter` for long leaving HTTP connections and streaming the response data. One of
-available specialized implementations is `ObservableSseEmitter` that allows to send long living server side event produced
+available specialized implementations is `ObservableSseEmitter` that allows to send server side event produced
 from `rx.Observable`.
 
 Example:
