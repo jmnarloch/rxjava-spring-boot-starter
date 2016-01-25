@@ -21,7 +21,7 @@ Add the Spring Boot starter to your project:
 
 ### Basic
 
-Registers Spring's MVC return value handlers for `rx.Observable` and `rx.Single` types. You don't need to use any longer
+Registers Spring's MVC return value handlers for `rx.Observable` and `rx.Single` types. You don't need to any longer use
 blocking operations or assign the values to DeferredResult or ListenableFuture instead you can declare that your REST
 endpoint returns an Observable.
 
@@ -44,7 +44,7 @@ public static class InvoiceResource {
 
 The `Observable` will wrap any produced results into a list and make it process through registered message converters.
 In case if you need to return exactly one result you can use `rx.Single` instead. You can think of `rx.Single`
-as counterparts of Spring's `DeferredResult` or `ListenableFuture`. Also with `rx.Single`, and unlike with `rx.Observable`
+as counterpart of Spring's `DeferredResult` or `ListenableFuture`. Also with `rx.Single`, and unlike with `rx.Observable`
 it is possible to return `ResponseEntity` in order to have the control of the HTTP headers or the status code of the
 response.
 
@@ -54,7 +54,7 @@ the processing timeout per response.
 
 ### Server side events
 
-Spring 4.2 introduced `ResponseBodyEmitter` for long leaving HTTP connections and streaming the response data. One of
+Spring 4.2 introduced `ResponseBodyEmitter` for long-lived HTTP connections and streaming the response data. One of
 available specialized implementations is `ObservableSseEmitter` that allows to send server side event produced
 from `rx.Observable`.
 
