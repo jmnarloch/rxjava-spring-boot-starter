@@ -23,7 +23,7 @@ Add the Spring Boot starter to your project:
 
 Registers Spring's MVC return value handlers for `rx.Observable` and `rx.Single` types. You don't need to any longer use
 blocking operations or assign the values to DeferredResult or ListenableFuture instead you can declare that your REST
-endpoint returns an Observable.
+endpoint returns Observable.
 
 Example:
 
