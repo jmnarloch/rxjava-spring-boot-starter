@@ -49,7 +49,7 @@ it is possible to return `ResponseEntity` in order to have the control of the HT
 response.
 
 Note: The `HandlerReturnValueHandler` for Observable uses 'toList' operator to aggregate the results, which
-is not workable with really long infinitive running Observables.
+is not workable with really long infinitive running Observables, from which is not possible to unsubscribe.
 
 In some scenarios when you want to have more control over the async processing you can use either `ObservableDeferredResult`
 or `SingleDeferredResult`, those are the specialized implementation of `DeferredResult` allowing for instance of setting
