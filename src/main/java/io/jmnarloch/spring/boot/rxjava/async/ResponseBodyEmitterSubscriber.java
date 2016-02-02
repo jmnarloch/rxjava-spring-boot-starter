@@ -37,6 +37,8 @@ class ResponseBodyEmitterSubscriber<T> extends Subscriber<T> implements Runnable
 
     private final ResponseBodyEmitter responseBodyEmitter;
 
+    private boolean completed;
+
     public ResponseBodyEmitterSubscriber(MediaType mediaType, Observable<T> observable, ResponseBodyEmitter responseBodyEmitter) {
 
         this.mediaType = mediaType;
@@ -50,7 +52,9 @@ class ResponseBodyEmitterSubscriber<T> extends Subscriber<T> implements Runnable
     public void onNext(T value) {
 
         try {
-            responseBodyEmitter.send(value, mediaType);
+            if(!completed) {
+                responseBodyEmitter.send(value, mediaType);
+            }
         } catch (IOException e) {
             throw new RuntimeException(e.getMessage(), e);
         }
@@ -63,7 +67,10 @@ class ResponseBodyEmitterSubscriber<T> extends Subscriber<T> implements Runnable
 
     @Override
     public void onCompleted() {
-        responseBodyEmitter.complete();
+        if(!completed) {
+            completed = true;
+            responseBodyEmitter.complete();
+        }
     }
 
     @Override

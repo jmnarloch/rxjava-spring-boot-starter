@@ -20,7 +20,8 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import rx.Observable;
 
 /**
- * A specialized {@link SseEmitter} that handles {@link Observable} return types.
+ * A specialized {@link SseEmitter} that handles {@link Observable} types. The emitter subscribes to the
+ * passed {@link Observable} instance and emits every produced value through {@link #send(Object, MediaType)}.
  *
  * @author Jakub Narloch
  * @see SseEmitter

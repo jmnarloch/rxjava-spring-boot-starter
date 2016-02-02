@@ -15,6 +15,7 @@
  */
 package io.jmnarloch.spring.boot.rxjava.async;
 
+import io.jmnarloch.spring.boot.rxjava.dto.EventDto;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,6 +24,8 @@ import org.springframework.boot.test.IntegrationTest;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.boot.test.TestRestTemplate;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
@@ -36,11 +39,13 @@ import rx.functions.Func1;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 
 /**
  * Tests the {@link ObservableDeferredResult} class.
@@ -72,6 +77,16 @@ public class ObservableDeferredResultTest {
         @RequestMapping(method = RequestMethod.GET, value = "/multiple")
         public ObservableDeferredResult<String> multiple() {
             return new ObservableDeferredResult<String>(Observable.just("multiple", "values"));
+        }
+
+        @RequestMapping(method = RequestMethod.GET, value = "/event", produces = APPLICATION_JSON_UTF8_VALUE)
+        public ObservableDeferredResult<EventDto> event() {
+            return new ObservableDeferredResult<EventDto>(
+                    Observable.just(
+                            new EventDto("Spring.io", new Date()),
+                            new EventDto("JavaOne", new Date())
+                    )
+            );
         }
 
         @RequestMapping(method = RequestMethod.GET, value = "/throw")
@@ -112,6 +127,20 @@ public class ObservableDeferredResultTest {
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(Arrays.asList("multiple", "values"), response.getBody());
+    }
+
+    @Test
+    public void shouldRetrieveJsonSerializedListValues() {
+
+        // when
+        ResponseEntity<List<EventDto>> response = restTemplate.exchange(path("/event"), HttpMethod.GET, null,
+                new ParameterizedTypeReference<List<EventDto>>() {});
+
+        // then
+        assertNotNull(response);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(2, response.getBody().size());
+        assertEquals("JavaOne", response.getBody().get(1).getName());
     }
 
     @Test

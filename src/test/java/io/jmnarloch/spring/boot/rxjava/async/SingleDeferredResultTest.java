@@ -15,6 +15,7 @@
  */
 package io.jmnarloch.spring.boot.rxjava.async;
 
+import io.jmnarloch.spring.boot.rxjava.dto.EventDto;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,8 +34,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import rx.Single;
 
+import java.util.Date;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 
 /**
  * Tests the {@link SingleDeferredResult} class.
@@ -69,6 +73,11 @@ public class SingleDeferredResultTest {
                     Single.just(new ResponseEntity<String>("single value", HttpStatus.NOT_FOUND)));
         }
 
+        @RequestMapping(method = RequestMethod.GET, value = "/event", produces = APPLICATION_JSON_UTF8_VALUE)
+        public SingleDeferredResult<EventDto> event() {
+            return new SingleDeferredResult<EventDto>(Single.just(new EventDto("Spring.io", new Date())));
+        }
+
         @RequestMapping(method = RequestMethod.GET, value = "/throw")
         public SingleDeferredResult<Object> error() {
             return new SingleDeferredResult<Object>(Single.error(new RuntimeException("Unexpected")));
@@ -97,6 +106,18 @@ public class SingleDeferredResultTest {
         assertNotNull(response);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
         assertEquals("single value", response.getBody());
+    }
+
+    @Test
+    public void shouldRetrieveJsonSerializedPojoValue() {
+
+        // when
+        ResponseEntity<EventDto> response = restTemplate.getForEntity(path("/event"), EventDto.class);
+
+        // then
+        assertNotNull(response);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("Spring.io", response.getBody().getName());
     }
 
     @Test

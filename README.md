@@ -42,11 +42,14 @@ public static class InvoiceResource {
 }
 ```
 
-The `Observable` will wrap any produced results into a list and make it process through registered message converters.
+The `Observable` will wrap any produced results into a list and make it process through Spring's message converters.
 In case if you need to return exactly one result you can use `rx.Single` instead. You can think of `rx.Single`
 as counterpart of Spring's `DeferredResult` or `ListenableFuture`. Also with `rx.Single`, and unlike with `rx.Observable`
 it is possible to return `ResponseEntity` in order to have the control of the HTTP headers or the status code of the
 response.
+
+Note: The `HandlerReturnValueHandler` for Observable uses 'toList' operator to aggregate the results, which
+is not workable with really long infinitive running Observables.
 
 In some scenarios when you want to have more control over the async processing you can use either `ObservableDeferredResult`
 or `SingleDeferredResult`, those are the specialized implementation of `DeferredResult` allowing for instance of setting

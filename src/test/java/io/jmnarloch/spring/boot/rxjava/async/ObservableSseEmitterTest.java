@@ -15,6 +15,7 @@
  */
 package io.jmnarloch.spring.boot.rxjava.async;
 
+import io.jmnarloch.spring.boot.rxjava.dto.EventDto;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,8 +34,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import rx.Observable;
 
+import java.util.Date;
+import java.util.GregorianCalendar;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
 
 /**
  * Tests the {@link ObservableSseEmitter} class.
@@ -67,6 +72,14 @@ public class ObservableSseEmitterTest {
         public ObservableSseEmitter<String> messages() {
             return new ObservableSseEmitter<String>(Observable.just("message 1", "message 2", "message 3"));
         }
+
+        @RequestMapping(method = RequestMethod.GET, value = "/events")
+        public ObservableSseEmitter<EventDto> event() {
+            return new ObservableSseEmitter<EventDto>(APPLICATION_JSON_UTF8, Observable.just(
+                    new EventDto("Spring.io", getDate(2016, 5, 11)),
+                    new EventDto("JavaOne", getDate(2016, 9, 22))
+            ));
+        }
     }
 
     @Test
@@ -93,7 +106,23 @@ public class ObservableSseEmitterTest {
         assertEquals("data:message 1\n\ndata:message 2\n\ndata:message 3\n\n", response.getBody());
     }
 
+    @Test
+    public void shouldRetrieveJsonOverSseWithMultipleMessages() {
+
+        // when
+        ResponseEntity<String> response = restTemplate.getForEntity(path("/events"), String.class);
+
+        // then
+        assertNotNull(response);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("data:{\"name\":\"Spring.io\",\"date\":1465596000000}\n\ndata:{\"name\":\"JavaOne\",\"date\":1477087200000}\n\n", response.getBody());
+    }
+
     private String path(String context) {
         return String.format("http://localhost:%d%s", port, context);
+    }
+
+    private static Date getDate(int year, int month, int day) {
+        return new GregorianCalendar(year, month, day).getTime();
     }
 }
