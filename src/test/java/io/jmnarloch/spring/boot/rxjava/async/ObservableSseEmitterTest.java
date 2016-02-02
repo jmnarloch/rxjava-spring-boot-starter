@@ -115,7 +115,6 @@ public class ObservableSseEmitterTest {
         // then
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("data:{\"name\":\"Spring.io\",\"date\":1465596000000}\n\ndata:{\"name\":\"JavaOne\",\"date\":1477087200000}\n\n", response.getBody());
     }
 
     private String path(String context) {
