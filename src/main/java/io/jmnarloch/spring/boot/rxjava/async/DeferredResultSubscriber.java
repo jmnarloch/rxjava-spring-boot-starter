@@ -24,6 +24,7 @@ import rx.Subscription;
  * A subscriber that sets the single value produced by the {@link Observable} on the {@link DeferredResult}.
  *
  * @author Jakub Narloch
+ * @author Robert Danci
  * @see DeferredResult
  */
 class DeferredResultSubscriber<T> extends Subscriber<T> implements Runnable {
@@ -32,10 +33,7 @@ class DeferredResultSubscriber<T> extends Subscriber<T> implements Runnable {
 
     private final Subscription subscription;
 
-    private boolean completed;
-
     public DeferredResultSubscriber(Observable<T> observable, DeferredResult<T> deferredResult) {
-
         this.deferredResult = deferredResult;
         this.deferredResult.onTimeout(this);
         this.deferredResult.onCompletion(this);
@@ -44,9 +42,7 @@ class DeferredResultSubscriber<T> extends Subscriber<T> implements Runnable {
 
     @Override
     public void onNext(T value) {
-        if (!completed) {
-            deferredResult.setResult(value);
-        }
+        deferredResult.setResult(value);
     }
 
     @Override
@@ -56,7 +52,7 @@ class DeferredResultSubscriber<T> extends Subscriber<T> implements Runnable {
 
     @Override
     public void onCompleted() {
-        completed = true;
+        // handled by the deferredResult onCompletion callback
     }
 
     @Override
