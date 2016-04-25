@@ -52,7 +52,6 @@ class DeferredResultSubscriber<T> extends Subscriber<T> implements Runnable {
 
     @Override
     public void onCompleted() {
-        // handled by the deferredResult onCompletion callback
     }
 
     @Override
