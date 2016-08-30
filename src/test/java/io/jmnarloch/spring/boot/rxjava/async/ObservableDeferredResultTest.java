@@ -69,6 +69,11 @@ public class ObservableDeferredResultTest {
     @RestController
     protected static class Application {
 
+        @RequestMapping(method = RequestMethod.GET, value = "/empty")
+        public ObservableDeferredResult<String> empty() {
+            return new ObservableDeferredResult<String>(Observable.<String>empty());
+        }
+
         @RequestMapping(method = RequestMethod.GET, value = "/single")
         public ObservableDeferredResult<String> single() {
             return new ObservableDeferredResult<String>(Observable.just("single value"));
@@ -103,6 +108,18 @@ public class ObservableDeferredResultTest {
                 }
             }));
         }
+    }
+
+    @Test
+    public void shouldRetrieveEmptyResponse() {
+
+        // when
+        ResponseEntity<List> response = restTemplate.getForEntity(path("/empty"), List.class);
+
+        // then
+        assertNotNull(response);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(Collections.emptyList(), response.getBody());
     }
 
     @Test
