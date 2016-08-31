@@ -64,6 +64,11 @@ public class ObservableReturnValueHandlerTest {
     @RestController
     protected static class Application {
 
+        @RequestMapping(method = RequestMethod.GET, value = "/empty")
+        public Observable<Void> empty() {
+            return Observable.empty();
+        }
+
         @RequestMapping(method = RequestMethod.GET, value = "/single")
         public Observable<String> single() {
             return Observable.just("single value");
@@ -88,6 +93,18 @@ public class ObservableReturnValueHandlerTest {
                 }
             });
         }
+    }
+
+    @Test
+    public void shouldRetrieveEmptyResponse() {
+
+        // when
+        ResponseEntity<List> response = restTemplate.getForEntity(path("/empty"), List.class);
+
+        // then
+        assertNotNull(response);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(Collections.emptyList(), response.getBody());
     }
 
     @Test
