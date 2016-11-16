@@ -15,8 +15,11 @@
  */
 package io.jmnarloch.spring.boot.rxjava.mvc;
 
+import io.reactivex.Observable;
+import io.reactivex.functions.Function;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.IntegrationTest;
@@ -31,9 +34,12 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import rx.Observable;
-import rx.functions.Func1;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.method.support.HandlerMethodReturnValueHandler;
+import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
 
+import javax.annotation.PostConstruct;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -64,6 +70,20 @@ public class ObservableReturnValueHandlerTest {
     @RestController
     protected static class Application {
 
+        @Autowired
+        private RequestMappingHandlerAdapter adapter;
+
+        @PostConstruct
+        public void prioritizeCustomReturnValueHandlers () {
+            final List<HandlerMethodReturnValueHandler> returnValueHandlers =
+                    new ArrayList<>(adapter.getReturnValueHandlers());
+            final List<HandlerMethodReturnValueHandler> customReturnValueHandlers =
+                    adapter.getCustomReturnValueHandlers();
+            returnValueHandlers.removeAll(customReturnValueHandlers);
+            returnValueHandlers.addAll(0, customReturnValueHandlers);
+            adapter.setReturnValueHandlers(returnValueHandlers);
+        }
+
         @RequestMapping(method = RequestMethod.GET, value = "/empty")
         public Observable<Void> empty() {
             return Observable.empty();
@@ -86,9 +106,9 @@ public class ObservableReturnValueHandlerTest {
 
         @RequestMapping(method = RequestMethod.GET, value = "/timeout")
         public Observable<String> timeout() {
-            return Observable.timer(1, TimeUnit.MINUTES).map(new Func1<Long, String>() {
+            return Observable.timer(1, TimeUnit.MINUTES).map(new Function<Long, String>() {
                 @Override
-                public String call(Long aLong) {
+                public String apply(Long aLong) {
                     return "single value";
                 }
             });

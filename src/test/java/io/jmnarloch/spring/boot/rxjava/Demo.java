@@ -36,7 +36,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import rx.Observable;
+import io.reactivex.Observable;
 
 import java.util.Date;
 import java.util.List;

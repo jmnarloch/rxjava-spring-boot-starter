@@ -34,8 +34,8 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import rx.Observable;
-import rx.functions.Func1;
+import io.reactivex.Observable;
+import io.reactivex.functions.Function;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -101,9 +101,9 @@ public class ObservableDeferredResultTest {
 
         @RequestMapping(method = RequestMethod.GET, value = "/timeout")
         public ObservableDeferredResult<String> timeout() {
-            return new ObservableDeferredResult<String>(Observable.timer(1, TimeUnit.MINUTES).map(new Func1<Long, String>() {
+            return new ObservableDeferredResult<String>(Observable.timer(1, TimeUnit.MINUTES).map(new Function<Long, String>() {
                 @Override
-                public String call(Long aLong) {
+                public String apply(Long aLong) {
                     return "single value";
                 }
             }));
