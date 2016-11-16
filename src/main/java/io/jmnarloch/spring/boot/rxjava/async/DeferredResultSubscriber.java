@@ -15,10 +15,9 @@
  */
 package io.jmnarloch.spring.boot.rxjava.async;
 
+import io.reactivex.Observable;
+import io.reactivex.observers.DisposableObserver;
 import org.springframework.web.context.request.async.DeferredResult;
-import rx.Observable;
-import rx.Subscriber;
-import rx.Subscription;
 
 /**
  * A subscriber that sets the single value produced by the {@link Observable} on the {@link DeferredResult}.
@@ -27,17 +26,15 @@ import rx.Subscription;
  * @author Robert Danci
  * @see DeferredResult
  */
-class DeferredResultSubscriber<T> extends Subscriber<T> implements Runnable {
+class DeferredResultSubscriber<T> extends DisposableObserver<T> implements Runnable {
 
     private final DeferredResult<T> deferredResult;
-
-    private final Subscription subscription;
 
     public DeferredResultSubscriber(Observable<T> observable, DeferredResult<T> deferredResult) {
         this.deferredResult = deferredResult;
         this.deferredResult.onTimeout(this);
         this.deferredResult.onCompletion(this);
-        this.subscription = observable.subscribe(this);
+        observable.subscribe(this);
     }
 
     @Override
@@ -51,11 +48,11 @@ class DeferredResultSubscriber<T> extends Subscriber<T> implements Runnable {
     }
 
     @Override
-    public void onCompleted() {
+    public void onComplete() {
     }
 
     @Override
     public void run() {
-        this.subscription.unsubscribe();
+        this.dispose();
     }
 }
