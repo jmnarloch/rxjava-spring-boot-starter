@@ -28,7 +28,7 @@ import io.reactivex.Observable;
  */
 public class ObservableSseEmitter<T> extends SseEmitter {
 
-    private final ResponseBodyEmitterSubscriber<T> subscriber;
+    private final ResponseBodyEmitterObserver<T> subscriber;
 
     public ObservableSseEmitter(Observable<T> observable) {
         this(null, observable);
@@ -40,6 +40,6 @@ public class ObservableSseEmitter<T> extends SseEmitter {
 
     public ObservableSseEmitter(Long timeout, MediaType mediaType, Observable<T> observable) {
         super(timeout);
-        this.subscriber = new ResponseBodyEmitterSubscriber<T>(mediaType, observable, this);
+        this.subscriber = new ResponseBodyEmitterObserver<T>(mediaType, observable, this);
     }
 }

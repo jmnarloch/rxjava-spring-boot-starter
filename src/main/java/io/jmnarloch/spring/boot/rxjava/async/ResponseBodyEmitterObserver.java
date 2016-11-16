@@ -28,7 +28,7 @@ import java.io.IOException;
  *
  * @author Jakub Narloch
  */
-class ResponseBodyEmitterSubscriber<T> extends DisposableObserver<T> implements Runnable {
+class ResponseBodyEmitterObserver<T> extends DisposableObserver<T> implements Runnable {
 
     private final MediaType mediaType;
 
@@ -36,7 +36,7 @@ class ResponseBodyEmitterSubscriber<T> extends DisposableObserver<T> implements 
 
     private boolean completed;
 
-    public ResponseBodyEmitterSubscriber(MediaType mediaType, Observable<T> observable, ResponseBodyEmitter responseBodyEmitter) {
+    public ResponseBodyEmitterObserver(MediaType mediaType, Observable<T> observable, ResponseBodyEmitter responseBodyEmitter) {
 
         this.mediaType = mediaType;
         this.responseBodyEmitter = responseBodyEmitter;

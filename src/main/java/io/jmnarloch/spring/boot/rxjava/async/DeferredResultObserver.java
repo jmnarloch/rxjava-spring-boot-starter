@@ -26,11 +26,11 @@ import org.springframework.web.context.request.async.DeferredResult;
  * @author Robert Danci
  * @see DeferredResult
  */
-class DeferredResultSubscriber<T> extends DisposableObserver<T> implements Runnable {
+class DeferredResultObserver<T> extends DisposableObserver<T> implements Runnable {
 
     private final DeferredResult<T> deferredResult;
 
-    public DeferredResultSubscriber(Observable<T> observable, DeferredResult<T> deferredResult) {
+    public DeferredResultObserver(Observable<T> observable, DeferredResult<T> deferredResult) {
         this.deferredResult = deferredResult;
         this.deferredResult.onTimeout(this);
         this.deferredResult.onCompletion(this);
