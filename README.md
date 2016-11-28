@@ -13,9 +13,12 @@ Add the Spring Boot starter to your project:
 <dependency>
   <groupId>io.jmnarloch</groupId>
   <artifactId>rxjava-spring-boot-starter</artifactId>
-  <version>1.0.0</version>
+  <version>2.0.0</version>
 </dependency>
 ```
+
+Note:
+If you need RxJava 1.4.x support use version 1.0.0. For RxJava2 use 2.x. 
 
 ## Usage
 
