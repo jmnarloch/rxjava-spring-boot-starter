@@ -17,7 +17,7 @@ package io.jmnarloch.spring.boot.rxjava.async;
 
 import org.springframework.http.MediaType;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
-import rx.Observable;
+import io.reactivex.Observable;
 
 /**
  * A specialized {@link SseEmitter} that handles {@link Observable} types. The emitter subscribes to the
@@ -28,7 +28,7 @@ import rx.Observable;
  */
 public class ObservableSseEmitter<T> extends SseEmitter {
 
-    private final ResponseBodyEmitterSubscriber<T> subscriber;
+    private final ResponseBodyEmitterObserver<T> subscriber;
 
     public ObservableSseEmitter(Observable<T> observable) {
         this(null, observable);
@@ -40,6 +40,6 @@ public class ObservableSseEmitter<T> extends SseEmitter {
 
     public ObservableSseEmitter(Long timeout, MediaType mediaType, Observable<T> observable) {
         super(timeout);
-        this.subscriber = new ResponseBodyEmitterSubscriber<T>(mediaType, observable, this);
+        this.subscriber = new ResponseBodyEmitterObserver<T>(mediaType, observable, this);
     }
 }

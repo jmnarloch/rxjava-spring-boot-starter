@@ -17,7 +17,7 @@ package io.jmnarloch.spring.boot.rxjava.async;
 
 import org.springframework.util.Assert;
 import org.springframework.web.context.request.async.DeferredResult;
-import rx.Single;
+import io.reactivex.Single;
 
 /**
  * A specialized {@link DeferredResult} that handles {@link Single} return type.
@@ -29,7 +29,7 @@ public class SingleDeferredResult<T> extends DeferredResult<T> {
 
     private static final Object EMPTY_RESULT = new Object();
 
-    private final DeferredResultSubscriber<T> subscriber;
+    private final DeferredResultObserver<T> subscriber;
 
     public SingleDeferredResult(Single<T> single) {
         this(null, EMPTY_RESULT, single);
@@ -43,6 +43,6 @@ public class SingleDeferredResult<T> extends DeferredResult<T> {
         super(timeout, timeoutResult);
         Assert.notNull(single, "single can not be null");
 
-        subscriber = new DeferredResultSubscriber<T>(single.toObservable(), this);
+        subscriber = new DeferredResultObserver<T>(single.toObservable(), this);
     }
 }

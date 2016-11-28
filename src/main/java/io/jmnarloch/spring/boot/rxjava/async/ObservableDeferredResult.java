@@ -17,7 +17,7 @@ package io.jmnarloch.spring.boot.rxjava.async;
 
 import org.springframework.util.Assert;
 import org.springframework.web.context.request.async.DeferredResult;
-import rx.Observable;
+import io.reactivex.Observable;
 
 import java.util.List;
 
@@ -31,7 +31,7 @@ public class ObservableDeferredResult<T> extends DeferredResult<List<T>> {
 
     private static final Object EMPTY_RESULT = new Object();
 
-    private final DeferredResultSubscriber<List<T>> subscriber;
+    private final DeferredResultObserver<List<T>> subscriber;
 
     public ObservableDeferredResult(Observable<T> observable) {
         this(null, EMPTY_RESULT, observable);
@@ -45,6 +45,6 @@ public class ObservableDeferredResult<T> extends DeferredResult<List<T>> {
         super(timeout, timeoutResult);
         Assert.notNull(observable, "observable can not be null");
 
-        subscriber = new DeferredResultSubscriber<List<T>>(observable.toList(), this);
+        subscriber = new DeferredResultObserver<List<T>>(observable.toList().toObservable(), this);
     }
 }

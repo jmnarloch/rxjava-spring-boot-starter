@@ -21,7 +21,7 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.context.request.async.WebAsyncUtils;
 import org.springframework.web.method.support.AsyncHandlerMethodReturnValueHandler;
 import org.springframework.web.method.support.ModelAndViewContainer;
-import rx.Observable;
+import io.reactivex.Observable;
 
 /**
  * A specialized {@link AsyncHandlerMethodReturnValueHandler} that handles {@link Observable} return types.

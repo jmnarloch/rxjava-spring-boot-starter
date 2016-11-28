@@ -15,11 +15,10 @@
  */
 package io.jmnarloch.spring.boot.rxjava.async;
 
+import io.reactivex.Observable;
+import io.reactivex.observers.DisposableObserver;
 import org.springframework.http.MediaType;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
-import rx.Observable;
-import rx.Subscriber;
-import rx.Subscription;
 
 import java.io.IOException;
 
@@ -29,23 +28,21 @@ import java.io.IOException;
  *
  * @author Jakub Narloch
  */
-class ResponseBodyEmitterSubscriber<T> extends Subscriber<T> implements Runnable {
+class ResponseBodyEmitterObserver<T> extends DisposableObserver<T> implements Runnable {
 
     private final MediaType mediaType;
-
-    private final Subscription subscription;
 
     private final ResponseBodyEmitter responseBodyEmitter;
 
     private boolean completed;
 
-    public ResponseBodyEmitterSubscriber(MediaType mediaType, Observable<T> observable, ResponseBodyEmitter responseBodyEmitter) {
+    public ResponseBodyEmitterObserver(MediaType mediaType, Observable<T> observable, ResponseBodyEmitter responseBodyEmitter) {
 
         this.mediaType = mediaType;
         this.responseBodyEmitter = responseBodyEmitter;
         this.responseBodyEmitter.onTimeout(this);
         this.responseBodyEmitter.onCompletion(this);
-        this.subscription = observable.subscribe(this);
+        observable.subscribe(this);
     }
 
     @Override
@@ -66,7 +63,7 @@ class ResponseBodyEmitterSubscriber<T> extends Subscriber<T> implements Runnable
     }
 
     @Override
-    public void onCompleted() {
+    public void onComplete() {
         if(!completed) {
             completed = true;
             responseBodyEmitter.complete();
@@ -75,6 +72,6 @@ class ResponseBodyEmitterSubscriber<T> extends Subscriber<T> implements Runnable
 
     @Override
     public void run() {
-        subscription.unsubscribe();
+        this.dispose();
     }
 }
