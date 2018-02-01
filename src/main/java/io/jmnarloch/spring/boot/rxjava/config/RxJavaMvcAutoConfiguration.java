@@ -46,7 +46,7 @@ public class RxJavaMvcAutoConfiguration {
     @RxJava
     @ConditionalOnMissingBean
     @ConditionalOnClass(Observable.class)
-    public ObservableReturnValueHandler observableReturnValueHandler() {
+    public ObservableReturnValueHandler rx2observableReturnValueHandler() {
         return new ObservableReturnValueHandler();
     }
 
@@ -54,7 +54,7 @@ public class RxJavaMvcAutoConfiguration {
     @RxJava
     @ConditionalOnMissingBean
     @ConditionalOnClass(Single.class)
-    public SingleReturnValueHandler singleReturnValueHandler() {
+    public SingleReturnValueHandler rx2singleReturnValueHandler() {
         return new SingleReturnValueHandler();
     }
 
