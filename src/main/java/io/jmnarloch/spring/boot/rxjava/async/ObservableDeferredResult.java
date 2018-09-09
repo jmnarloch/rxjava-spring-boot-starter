@@ -29,20 +29,14 @@ import java.util.List;
  */
 public class ObservableDeferredResult<T> extends DeferredResult<List<T>> {
 
-    private static final Object EMPTY_RESULT = new Object();
-
     private final DeferredResultObserver<List<T>> observer;
 
     public ObservableDeferredResult(Observable<T> observable) {
-        this(null, EMPTY_RESULT, observable);
+        this(null, observable);
     }
 
-    public ObservableDeferredResult(long timeout, Observable<T> observable) {
-        this(timeout, EMPTY_RESULT, observable);
-    }
-
-    public ObservableDeferredResult(Long timeout, Object timeoutResult, Observable<T> observable) {
-        super(timeout, timeoutResult);
+    public ObservableDeferredResult(Long timeout, Observable<T> observable) {
+        super(timeout);
         Assert.notNull(observable, "observable can not be null");
 
         observer = new DeferredResultObserver<List<T>>(observable.toList().toObservable(), this);
