@@ -27,20 +27,14 @@ import io.reactivex.Single;
  */
 public class SingleDeferredResult<T> extends DeferredResult<T> {
 
-    private static final Object EMPTY_RESULT = new Object();
-
     private final DeferredResultObserver<T> observer;
 
     public SingleDeferredResult(Single<T> single) {
-        this(null, EMPTY_RESULT, single);
+        this(null, single);
     }
 
-    public SingleDeferredResult(long timeout, Single<T> single) {
-        this(timeout, EMPTY_RESULT, single);
-    }
-
-    public SingleDeferredResult(Long timeout, Object timeoutResult, Single<T> single) {
-        super(timeout, timeoutResult);
+    public SingleDeferredResult(Long timeout, Single<T> single) {
+        super(timeout);
         Assert.notNull(single, "single can not be null");
 
         observer = new DeferredResultObserver<T>(single.toObservable(), this);
