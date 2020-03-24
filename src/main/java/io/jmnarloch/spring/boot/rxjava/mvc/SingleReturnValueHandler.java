@@ -16,12 +16,13 @@
 package io.jmnarloch.spring.boot.rxjava.mvc;
 
 import io.jmnarloch.spring.boot.rxjava.async.SingleDeferredResult;
+import io.reactivex.rxjava3.core.Single;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.context.request.async.WebAsyncUtils;
 import org.springframework.web.method.support.AsyncHandlerMethodReturnValueHandler;
 import org.springframework.web.method.support.ModelAndViewContainer;
-import io.reactivex.Single;
+//import io.reactivex.Single;
 
 /**
  * A specialized {@link AsyncHandlerMethodReturnValueHandler} that handles {@link Single} return types.

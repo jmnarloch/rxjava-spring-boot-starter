@@ -1,45 +1,35 @@
-buildscript {
-    repositories {
-        jcenter()
-    }
-}
 
-plugins {
-    id "com.github.hierynomus.license" version "0.11.0"
-    id 'net.researchgate.release' version '2.1.2'
-    id 'com.github.kt3k.coveralls' version '2.4.0'
-}
 
 apply plugin: 'java'
-apply plugin: "jacoco"
+//apply plugin: "jacoco"
 apply plugin: 'idea'
 
 apply from: 'libraries.gradle'
-apply from: 'gradle/license.gradle'
-apply from: 'gradle/release.gradle'
+//apply from: 'gradle/license.gradle'
+//apply from: 'gradle/release.gradle'
 
-apply plugin: 'findbugs'
-apply plugin: 'pmd'
+//apply plugin: 'findbugs'
+//apply plugin: 'pmd'
 
-apply plugin: 'com.github.kt3k.coveralls'
+//apply plugin: 'com.github.kt3k.coveralls'
 
-sourceCompatibility = 1.7
+sourceCompatibility = 11
 
 group = "io.jmnarloch"
 archivesBaseName="rxjava-spring-boot-starter"
 
-ext {
-    isReleaseVersion = !version.endsWith("SNAPSHOT")
-}
+//ext {
+//    isReleaseVersion = !version.endsWith("SNAPSHOT")
+//}
 
-task wrapper(type: Wrapper) {
-    gradleVersion = '3.2.1'
-}
+//task wrapper(type: Wrapper) {
+//    gradleVersion = '3.2.1'
+//}
 
 jar {
     manifest {
-        attributes 'Implementation-Title': 'rxjava-spring-cloud-starter',
-                   'Implementation-Version': version
+        attributes 'Implementation-Title': 'rxjava-spring-cloud-starter'
+
     }
 }
 
@@ -64,13 +54,13 @@ dependencies {
     testCompile (libraries.mockito)
 }
 
-findbugs {
-    ignoreFailures = true
-}
-
-jacocoTestReport {
-    reports {
-        xml.enabled = true
-        html.enabled = true
-    }
-}
+//findbugs {
+//    ignoreFailures = true
+//}
+//
+//jacocoTestReport {
+//    reports {
+//        xml.enabled = true
+//        html.enabled = true
+//    }
+//}

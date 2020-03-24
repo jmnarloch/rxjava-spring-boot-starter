@@ -15,9 +15,9 @@
  */
 package io.jmnarloch.spring.boot.rxjava.async;
 
+import io.reactivex.rxjava3.core.Single;
 import org.springframework.util.Assert;
 import org.springframework.web.context.request.async.DeferredResult;
-import io.reactivex.Single;
 
 /**
  * A specialized {@link DeferredResult} that handles {@link Single} return type.

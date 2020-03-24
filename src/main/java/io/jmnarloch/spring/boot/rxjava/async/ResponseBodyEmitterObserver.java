@@ -15,8 +15,8 @@
  */
 package io.jmnarloch.spring.boot.rxjava.async;
 
-import io.reactivex.Observable;
-import io.reactivex.observers.DisposableObserver;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.observers.DisposableObserver;
 import org.springframework.http.MediaType;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
 

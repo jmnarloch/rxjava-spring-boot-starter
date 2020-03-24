@@ -15,9 +15,10 @@
  */
 package io.jmnarloch.spring.boot.rxjava.async;
 
+import io.reactivex.rxjava3.core.Observable;
 import org.springframework.http.MediaType;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
-import io.reactivex.Observable;
+//import io.reactivex.Observable;
 
 /**
  * A specialized {@link SseEmitter} that handles {@link Observable} types. The emitter subscribes to the

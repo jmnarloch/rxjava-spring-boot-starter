@@ -16,12 +16,13 @@
 package io.jmnarloch.spring.boot.rxjava.mvc;
 
 import io.jmnarloch.spring.boot.rxjava.async.ObservableDeferredResult;
+import io.reactivex.rxjava3.core.Observable;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.context.request.async.WebAsyncUtils;
 import org.springframework.web.method.support.AsyncHandlerMethodReturnValueHandler;
 import org.springframework.web.method.support.ModelAndViewContainer;
-import io.reactivex.Observable;
+//import io.reactivex.Observable;
 
 /**
  * A specialized {@link AsyncHandlerMethodReturnValueHandler} that handles {@link Observable} return types.

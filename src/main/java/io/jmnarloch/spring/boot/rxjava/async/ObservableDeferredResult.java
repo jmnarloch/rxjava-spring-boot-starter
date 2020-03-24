@@ -15,9 +15,10 @@
  */
 package io.jmnarloch.spring.boot.rxjava.async;
 
+import io.reactivex.rxjava3.core.Observable;
 import org.springframework.util.Assert;
 import org.springframework.web.context.request.async.DeferredResult;
-import io.reactivex.Observable;
+//import io.reactivex.Observable;
 
 import java.util.List;
 
