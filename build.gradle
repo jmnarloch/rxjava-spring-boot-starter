@@ -1,3 +1,9 @@
+buildscript {
+    dependencies {
+        classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.8.3'
+    }
+}
+
 plugins {
     id 'java'
     id 'maven'
@@ -7,12 +13,21 @@ plugins {
 
 
 apply plugin: 'idea'
+apply plugin: 'com.github.kt3k.coveralls'
+apply plugin: 'jacoco'
 
 sourceCompatibility = 11
 
 group = "io.iceflower"
 archivesBaseName="rxjava-spring-boot-starter"
 
+
+jacocoTestReport {
+    reports {
+        xml.enabled = true // coveralls plugin depends on xml format report
+        html.enabled = true
+    }
+}
 
 
 bootJar {
