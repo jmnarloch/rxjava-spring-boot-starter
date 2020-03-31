@@ -4,7 +4,7 @@
 
 
 [![Build Status](https://travis-ci.org/iceflower/rxjava-spring-boot-starter.svg?branch=master)](https://travis-ci.org/iceflower/rxjava-spring-boot-starter)
-
+[![Coverage Status](https://coveralls.io/repos/github/iceflower/rxjava-spring-boot-starter/badge.svg?branch=master)](https://coveralls.io/github/iceflower/rxjava-spring-boot-starter?branch=master)
 ## Setup
 
 Add the Spring Boot starter to your project:
