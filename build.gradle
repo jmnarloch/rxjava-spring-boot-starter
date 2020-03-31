@@ -2,20 +2,27 @@ buildscript {
     repositories {
         jcenter()
     }
+    dependencies {
+        classpath 'com.novoda:bintray-release:0.9.2'
+    }
 }
+
+
 
 plugins {
     id 'java'
     id 'maven'
     id 'org.springframework.boot' version '2.2.4.RELEASE'
     id 'io.spring.dependency-management' version '1.0.6.RELEASE'
-    id 'com.github.kt3k.coveralls' version '2.10.1'
+    id 'com.github.kt3k.coveralls' version '2.4.0'
+    id "com.jfrog.bintray" version "1.2"
 }
 
 
 apply plugin: 'idea'
 apply plugin: 'com.github.kt3k.coveralls'
 apply plugin: 'jacoco'
+apply plugin: 'com.novoda.bintray-release'
 
 sourceCompatibility = 11
 
@@ -25,6 +32,7 @@ version= '3.0.0'
 
 
 jacocoTestReport {
+    enabled = true
     reports {
         xml.enabled = true // coveralls plugin depends on xml format report
         html.enabled = true
@@ -39,7 +47,7 @@ bootJar {
 jar {
     enabled = true
     manifest {
-        attributes 'Implementation-Title': 'rxjava-spring-cloud-starter'
+        attributes 'Implementation-Title': 'rxjava-spring-boot-starter'
     }
 }
 
@@ -50,6 +58,17 @@ repositories {
 test {
     useJUnitPlatform()
 }
+
+
+publish {
+    userOrg = 'iceflower'
+    groupId = 'io.iceflower'
+    artifactId = 'rxjava-spring-boot-starter'
+    publishVersion = '3.0.0'
+    desc = 'rxjava starter for springboot webmvc'
+    website = 'https://github.com/iceflower/rxjava-spring-boot-starter'
+}
+
 
 
 dependencies {
