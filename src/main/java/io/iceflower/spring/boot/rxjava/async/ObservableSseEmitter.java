@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.jmnarloch.spring.boot.rxjava.async;
+package io.iceflower.spring.boot.rxjava.async;
 
+import io.reactivex.rxjava3.core.Observable;
 import org.springframework.http.MediaType;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
-import io.reactivex.Observable;
 
 /**
  * A specialized {@link SseEmitter} that handles {@link Observable} types. The emitter subscribes to the

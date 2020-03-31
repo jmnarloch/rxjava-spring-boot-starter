@@ -1,24 +1,22 @@
 # Spring MVC RxJava handlers
 
-> A Spring Boot starter for RxJava integration
+> A Spring Boot starter for RxJava3 integration
 
-[![Build Status](https://travis-ci.org/jmnarloch/rxjava-spring-boot-starter.svg?branch=master)](https://travis-ci.org/jmnarloch/rxjava-spring-boot-starter)
-[![Coverage Status](https://coveralls.io/repos/jmnarloch/rxjava-spring-boot-starter/badge.svg?branch=master&service=github)](https://coveralls.io/github/jmnarloch/rxjava-spring-boot-starter?branch=master)
+
+[![Build Status](https://travis-ci.org/iceflower/rxjava-spring-boot-starter.svg?branch=master)](https://travis-ci.org/iceflower/rxjava-spring-boot-starter)
 
 ## Setup
 
 Add the Spring Boot starter to your project:
 
-```xml
-<dependency>
-  <groupId>io.jmnarloch</groupId>
-  <artifactId>rxjava-spring-boot-starter</artifactId>
-  <version>2.0.0</version>
-</dependency>
+
+
+```
+I haven't registered this source code with the maven central repository yet.
+
+As soon as the registration is complete, we will add the relevant details.
 ```
 
-Note:
-If you need RxJava 1.4.x support use version 1.0.0. For RxJava2 use 2.x. 
 
 ## Usage
 
@@ -58,7 +56,7 @@ In some scenarios when you want to have more control over the async processing y
 or `SingleDeferredResult`, those are the specialized implementation of `DeferredResult` allowing for instance of setting
 the processing timeout per response.
 
-### Server side events
+### Server-sent events
 
 Spring 4.2 introduced `ResponseBodyEmitter` for long-lived HTTP connections and streaming the response data. One of
 available specialized implementations is `ObservableSseEmitter` that allows to send server side event produced
@@ -104,3 +102,7 @@ rxjava.mvc.enabled=true # true by default
 ## License
 
 Apache 2.0
+
+Note : The source code for this repository is a modification of some of the original author's code for maintenance purposes.
+
+origin code : https://github.com/jmnarloch/rxjava-spring-boot-starter 

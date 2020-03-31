@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.jmnarloch.spring.boot.rxjava.async;
+package io.iceflower.spring.boot.rxjava.async;
 
-import io.reactivex.Observable;
-import io.reactivex.observers.DisposableObserver;
+
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.observers.DisposableObserver;
 import org.springframework.web.context.request.async.DeferredResult;
 
 /**

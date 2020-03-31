@@ -13,13 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.jmnarloch.spring.boot.rxjava.async;
+package io.iceflower.spring.boot.rxjava.async;
 
+import io.reactivex.rxjava3.core.Observable;
+import java.util.List;
 import org.springframework.util.Assert;
 import org.springframework.web.context.request.async.DeferredResult;
-import io.reactivex.Observable;
-
-import java.util.List;
 
 /**
  * A specialized {@link DeferredResult} that handles {@link Observable} type.
