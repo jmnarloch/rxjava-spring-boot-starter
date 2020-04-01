@@ -10,12 +10,23 @@
 Add the Spring Boot starter to your project:
 
 
-
+maven : 
+```xml
+<dependency>
+	<groupId>io.iceflower</groupId>
+	<artifactId>rxjava-spring-boot-starter</artifactId>
+	<version>3.0.0</version>
+</dependency>
 ```
-I haven't registered this source code with the maven central repository yet.
 
-As soon as the registration is complete, we will add the relevant details.
+gradle : 
+```groovy
+implementation 'io.iceflower:rxjava-spring-boot-starter:3.0.0'
 ```
+
+Note:
+
+You need to add jcenter repository.
 
 
 ## Usage
