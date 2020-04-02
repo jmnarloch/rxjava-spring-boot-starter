@@ -16,6 +16,7 @@
 package io.iceflower.spring.boot.rxjava.async;
 
 
+import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.observers.DisposableObserver;
 import java.io.IOException;
@@ -24,9 +25,10 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter
 
 
 /**
- * Subscriber that any value produced by the {@link Observable} into the {@link ResponseBodyEmitter}.
+ * Subscriber that any value produced by the {@link Observable} or {@link Flowable} into the {@link ResponseBodyEmitter}.
  *
  * @author Jakub Narloch
+ * @author 김영근
  */
 class ResponseBodyEmitterObserver<T> extends DisposableObserver<T> implements Runnable {
 
@@ -43,6 +45,16 @@ class ResponseBodyEmitterObserver<T> extends DisposableObserver<T> implements Ru
         this.responseBodyEmitter.onTimeout(this);
         this.responseBodyEmitter.onCompletion(this);
         observable.subscribe(this);
+    }
+
+    public ResponseBodyEmitterObserver(MediaType mediaType, Flowable<T> flowable, ResponseBodyEmitter responseBodyEmitter) {
+
+        this.mediaType = mediaType;
+        this.responseBodyEmitter = responseBodyEmitter;
+        this.responseBodyEmitter.onTimeout(this);
+        this.responseBodyEmitter.onCompletion(this);
+        flowable.toObservable()
+            .subscribe(this);
     }
 
     @Override

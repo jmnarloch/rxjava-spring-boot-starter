@@ -1,5 +1,7 @@
 package io.iceflower.spring.boot.rxjava.mvc;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.functions.Function;
 import java.util.ArrayList;
@@ -17,9 +19,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -47,6 +51,16 @@ public class ObservableReturnValueHandlerTest {
   @EnableAutoConfiguration
   @RestController
   protected static class Application {
+
+    @Bean
+    public ObjectMapper objectMapper() {
+
+      return Jackson2ObjectMapperBuilder
+          .json()
+          .featuresToEnable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
+          .build();
+    }
+
 
     @Autowired
     private RequestMappingHandlerAdapter adapter;
@@ -92,8 +106,6 @@ public class ObservableReturnValueHandlerTest {
       });
     }
   }
-
-
   @Nested
   @DisplayName("ObservableReturnValueHandler 는")
   class Describe_of_ObservableReturnValueHandler {

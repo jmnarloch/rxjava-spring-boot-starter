@@ -23,6 +23,7 @@ import org.springframework.web.context.request.async.DeferredResult;
  * A specialized {@link DeferredResult} that handles {@link Single} return type.
  *
  * @author Jakub Narloch
+ * @author 김영근
  * @see DeferredResult
  */
 public class SingleDeferredResult<T> extends DeferredResult<T> {
@@ -43,6 +44,6 @@ public class SingleDeferredResult<T> extends DeferredResult<T> {
         super(timeout, timeoutResult);
         Assert.notNull(single, "single can not be null");
 
-        observer = new DeferredResultObserver<T>(single.toObservable(), this);
+        observer = new DeferredResultObserver<T>(single, this);
     }
 }

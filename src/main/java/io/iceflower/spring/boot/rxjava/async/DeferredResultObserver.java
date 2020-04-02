@@ -16,15 +16,18 @@
 package io.iceflower.spring.boot.rxjava.async;
 
 
+import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.observers.DisposableObserver;
 import org.springframework.web.context.request.async.DeferredResult;
 
 /**
- * A subscriber that sets the single value produced by the {@link Observable} on the {@link DeferredResult}.
+ * A subscriber that sets the single value produced by the {@link Observable} and {@link Single}, {@link Flowable} on the {@link DeferredResult}.
  *
  * @author Jakub Narloch
  * @author Robert Danci
+ * @author 김영근
  * @see DeferredResult
  */
 class DeferredResultObserver<T> extends DisposableObserver<T> implements Runnable {
@@ -36,6 +39,20 @@ class DeferredResultObserver<T> extends DisposableObserver<T> implements Runnabl
         this.deferredResult.onTimeout(this);
         this.deferredResult.onCompletion(this);
         observable.subscribe(this);
+    }
+    public DeferredResultObserver(Single<T> single, DeferredResult<T> deferredResult) {
+        this.deferredResult = deferredResult;
+        this.deferredResult.onTimeout(this);
+        this.deferredResult.onCompletion(this);
+        single.toObservable()
+            .subscribe(this);
+    }
+    public DeferredResultObserver(Flowable<T> flowable, DeferredResult<T> deferredResult) {
+        this.deferredResult = deferredResult;
+        this.deferredResult.onTimeout(this);
+        this.deferredResult.onCompletion(this);
+        flowable.toObservable()
+            .subscribe(this);
     }
 
     @Override

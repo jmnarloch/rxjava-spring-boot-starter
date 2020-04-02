@@ -1,6 +1,7 @@
 package io.iceflower.spring.boot.rxjava.async;
 
 import io.iceflower.spring.boot.rxjava.dto.EventDto;
+import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.core.Observable;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -21,21 +22,22 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 /**
- * A unit test code of ObservableDeferredResult
+ * A unit test code of FlowableSseEmitter
  *
- * @author Jakub Narloch
  * @author 김영근
  */
+
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(
-    classes = ObservableSseEmitterTest.Application.class,
+    classes = FlowableSseEmitterTest.Application.class,
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT
 )
-@DisplayName("ObservableSseEmitter 클래스")
-public class ObservableSseEmitterTest {
+@DisplayName("FlowableSseEmitter 클래스")
+class FlowableSseEmitterTest {
 
   @Autowired
   private TestRestTemplate restTemplate;
@@ -46,18 +48,18 @@ public class ObservableSseEmitterTest {
   protected static class Application {
 
     @RequestMapping(method = RequestMethod.GET, value = "/sse")
-    public ObservableSseEmitter<String> single() {
-      return new ObservableSseEmitter<String>(Observable.just("single value"));
+    public FlowableSseEmitter<String> single() {
+      return new FlowableSseEmitter<String>(Flowable.just("single value"));
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/messages")
-    public ObservableSseEmitter<String> messages() {
-      return new ObservableSseEmitter<String>(Observable.just("message 1", "message 2", "message 3"));
+    public FlowableSseEmitter<String> messages() {
+      return new FlowableSseEmitter<String>(Flowable.just("message 1", "message 2", "message 3"));
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/events")
-    public ObservableSseEmitter<EventDto> event() {
-      return new ObservableSseEmitter<EventDto>(APPLICATION_JSON, Observable.just(
+    public FlowableSseEmitter<EventDto> event() {
+      return new FlowableSseEmitter<EventDto>(APPLICATION_JSON, Flowable.just(
           new EventDto("Spring.io", getDate(2016, 5, 11)),
           new EventDto("JavaOne", getDate(2016, 9, 22))
       ));
@@ -116,4 +118,5 @@ public class ObservableSseEmitterTest {
       }
     }
   }
+
 }

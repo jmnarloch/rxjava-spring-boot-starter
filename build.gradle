@@ -65,7 +65,7 @@ publish {
     userOrg = 'iceflower01'
     groupId = 'io.iceflower'
     artifactId = 'rxjava-spring-boot-starter'
-    publishVersion = '3.0.0'
+    publishVersion = '3.0.1'
     desc = 'rxjava starter for springboot webmvc'
     website = 'https://github.com/iceflower/rxjava-spring-boot-starter'
 }
@@ -75,7 +75,7 @@ publish {
 dependencies {
 
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
-    compile 'io.reactivex.rxjava3:rxjava:3.0.0'
+    compile 'io.reactivex.rxjava3:rxjava:3.0.1'
     compile 'org.springframework.boot:spring-boot-starter-web'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.5.2")
