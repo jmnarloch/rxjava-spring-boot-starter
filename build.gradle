@@ -28,7 +28,7 @@ sourceCompatibility = 11
 
 group = "io.iceflower"
 archivesBaseName="rxjava-spring-boot-starter"
-version= '3.0.0'
+version= '3.0.1'
 
 
 jacocoTestReport {
@@ -69,7 +69,6 @@ publish {
     desc = 'rxjava starter for springboot webmvc'
     website = 'https://github.com/iceflower/rxjava-spring-boot-starter'
 }
-
 
 
 dependencies {

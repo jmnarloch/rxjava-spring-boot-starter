@@ -4,7 +4,7 @@
 
 
 [![Build Status](https://travis-ci.org/iceflower/rxjava-spring-boot-starter.svg?branch=master)](https://travis-ci.org/iceflower/rxjava-spring-boot-starter)
-[![Coverage Status](https://coveralls.io/repos/github/iceflower/rxjava-spring-boot-starter/badge.svg?branch=master)](https://coveralls.io/github/iceflower/rxjava-spring-boot-starter?branch=master)
+[ ![Download](https://api.bintray.com/packages/iceflower01/iceflower/rxjava-spring-boot-starter/images/download.svg?version=3.0.1) ](https://bintray.com/iceflower01/iceflower/rxjava-spring-boot-starter/3.0.1/link)
 ## Setup
 
 Add the Spring Boot starter to your project:
@@ -14,13 +14,13 @@ maven :
 <dependency>
 	<groupId>io.iceflower</groupId>
 	<artifactId>rxjava-spring-boot-starter</artifactId>
-	<version>3.0.0</version>
+	<version>3.0.1</version>
 </dependency>
 ```
 
 gradle : 
 ```groovy
-implementation 'io.iceflower:rxjava-spring-boot-starter:3.0.0'
+implementation 'io.iceflower:rxjava-spring-boot-starter:3.0.1'
 ```
 
 Note:
